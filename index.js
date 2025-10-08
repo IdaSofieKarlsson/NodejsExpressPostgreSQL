@@ -1,3 +1,6 @@
+//Update your project with Zod and ESLint.
+//Test your routes to make sure they still work.
+
 import express from "express";
 import pg from "pg";
 import dotenv from "dotenv";
