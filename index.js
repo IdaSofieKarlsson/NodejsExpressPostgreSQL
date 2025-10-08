@@ -74,6 +74,56 @@ app.delete("/players/:player_id", async (req, res) => {
   }
 });
 
+//Task 1: List All Players and Their Scores
+app.get("/players-scores", async (req, res) => {
+  try {
+    const result = await pool.query("SELECT p.name AS player_name, g.title AS game_title, s.scores FROM scores s INNER JOIN players p ON s.player_id = p.player_id INNER JOIN games g ON s.game_id = g.game_id;");
+    res.status(200).json(result.rows);
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
+});
+
+//Task 2: Find High Scorers
+app.get("/top-players", async (req, res) => {
+  try {
+    const result = await pool.query("SELECT p.name AS player_name, SUM(s.scores) AS total_scores FROM players p INNER JOIN scores s ON p.player_id = s.player_id GROUP BY p.player_id, p.name ORDER BY total_scores DESC LIMIT 3");
+    res.status(200).json(result.rows);
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
+});
+
+//Task 3: Players Who Didn’t Play Any Games
+app.get("/inactive-players", async (req, res) => {
+  try {
+    const result = await pool.query("SELECT p.name AS player_name FROM players p LEFT JOIN scores s ON p.player_id = s.player_id WHERE s.player_id IS NULL");
+    res.status(200).json(result.rows);
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
+});
+
+//Task 4: Find Popular Game Genres
+app.get("/popular-genres", async (req, res) => {
+  try {
+    const result = await pool.query("SELECT g.genre, COUNT(*) AS plays_count FROM scores s INNER JOIN games g ON s.game_id = g.game_id GROUP BY g.genre ORDER BY plays_count DESC LIMIT 1");
+    res.status(200).json(result.rows);
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
+});
+
+//Task 5: Recently Joined Players
+app.get("/recent-players", async (req, res) => {
+  try {
+    const result = await pool.query("SELECT player_id, name, join_date FROM players WHERE join_date >= CURRENT_DATE - INTERVAL '30 days' ORDER BY join_date DESC");
+    res.status(200).json(result.rows);
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
+});
+
 app.listen(3000, (req, res) => {
   console.log(`Server is running on PORT ${PORT}`);
 });
