@@ -16,7 +16,8 @@ export default defineConfig([
       "no-undef": "error",  //prevent using undeclared variables
       curly: "error", //enforce braces around if/else
       semi: ["error", "always"], //require semicolons
-      quotes: ["error", "double"], //enforce consistent quotes
+      //quotes: ["error", "double"], //enforce consistent quotes    
+      // this rule is commented out, bc otherwise backticks ` doesn't work, and backticks is needed in order to write a query on several rows
       indent: ["error", 2], //enforce consistent indentation
       "object-curly-spacing": ["error", "always"],
       "no-console": "off",
